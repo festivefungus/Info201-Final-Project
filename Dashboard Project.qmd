@@ -1,0 +1,300 @@
+---
+title: "Quarto Dashboard"
+format:
+  dashboard:
+      echo: true
+      scrolling: true 
+      embed-resources: true
+author: "Dylan Au, Alexander Seshan, Omar Khan" 
+---
+
+# Welcome!
+
+Authors: Dylan Au, Alexander Seshan, Omar Khan \
+This is our Project!\
+We will be analyzing some data about Pizza Prices and Inflation rates over time! \
+Take a look at the tabs for our questions and other information!
+
+Below is map of all the pizza locations from our data!
+
+```{r}
+library(plotly)
+library(dplyr)
+library(ggplot2)
+inflation_df <- read.csv("InflationDF.csv")
+pizza_df <- read.csv("PizzaDF.csv")
+Total_df <- pizza_df |> left_join(inflation_df, join_by("Year"))
+#Cleaning Data
+Total_df <- Total_df |> mutate(Month = substr(Date, 6, 7))
+Total_df <- Total_df |> filter(Year != 2026)
+
+ny <- map_data("state") |> filter(region == "new york")
+
+map1 <- ggplot() +
+  geom_polygon(data = ny,aes(x = long, y = lat, group = group)) +
+  geom_point( data = Total_df, aes(x = location_lng, y = location_lat,
+      text = paste("Location:", Name, "\n", "Price:", Price)),
+      color = "purple")+
+  labs(
+    title = "Map of Pizza Locations",
+    x = "Longitude",
+    y = "Latitude")
+ggplotly(map1)
+
+```
+
+# Setup and Cleaning
+
+```{r setup}
+#Libraries
+library(dplyr)
+library(ggplot2)
+library(tidyverse)
+library(plotly)
+
+#Making Joined Dataset
+inflation_df <- read.csv("InflationDF.csv")
+pizza_df <- read.csv("PizzaDF.csv")
+Total_df <- pizza_df |> left_join(inflation_df, join_by("Year"))
+#Cleaning Data
+Total_df <- Total_df |> mutate(Month = substr(Date, 6, 7))
+Total_df <- Total_df |> filter(Year != 2026)
+```
+
+# Project Components
+
+## 3 Big picture questions
+
+## How have pizza prices changed over time in comparison to inflation?
+
+## Is there any correlation to when inflation rises and budget pizza prices rise?
+
+## How have significant events, specifically COVID, impacted the relationship between pizza prices and inflation?
+
+<https://www.data-is-plural.com/>
+
+<https://www.instagram.com/nycslice/>
+
+Link to outside source
+
+<https://docs.google.com/spreadsheets/d/1EY3oi9ttxybG0A0Obtwey6BFu7QLqdHe02JApijgztg/edit?gid=0#gid=0>
+
+<https://www.usinflationcalculator.com/inflation/current-inflation-rates/>
+
+link to data sets& analysis of data
+
+This analysis is important because it breaks down the complicated workings of the modern economy using pizza, which is one of the most common "affordable luxuries" in the world. We can see how global shocks like COVID-19 and supply chain failures affect the cost of living by looking at the link between a pepperoni pie and the Consumer Price Index (CPI). Looking at pizza prices gives you a "ground-level" view of the economy. If a staple that relies on efficiency and volume can't keep up with inflation, it means that consumers' buying power is going down.
+
+Ethical questions or limitations-
+
+Using these data sets together is great for telling stories, but you need to be honest. The official inflation numbers show how the economy is doing, but the pizza data shows how people are feeling and how business are reacting to rising inflation, prices and demands. One is a way to measure math, and the other is a way to measure culture.
+
+### 1.2 Data Context
+
+NYC Slice Pizza Price Spreadsheet
+
+-   **Source Link:** [Google Sheets Dataset](https://docs.google.com/spreadsheets/d/1EY3oi9ttxybG0A0Obtwey6BFu7QLqdHe02JApijgztg/edit?gid=0#gid=0)
+
+-   **Creator:** Compiled by the creators of the **\@NYCSlice** project.
+
+-   The cost of a typical plain cheese slice at different pizzerias in New York City's five boroughs is documented in this dataset. The shop name, location, and price paid for a slice are all recorded in each entry, which represents a single measurement at a particular moment in time. The data offers a detailed look at local urban food costs, with over 450 individual recordings made mostly between 2014 and 2023. Although this sample provides an amazing "street-level" view of New York's microeconomy, it suffers from selection bias because it concentrates on stores that the project creators felt were "worthy" of documentation. As a result, it might not accurately reflect the average cost in residential areas that receive less traffic, but it is still the most genuine example of the "Pizza Principle" in action.
+
+### U.S. Inflation Calculator (CPI Data)
+
+-   **Source Link:** [Current US Inflation Rates](https://www.usinflationcalculator.com/inflation/current-inflation-rates/)
+
+-   **Creator:** Data is sourced from the **U.S. Bureau of Labor Statistics (BLS)**.
+
+-   This dataset follows the Consumer Price Index (CPI), which shows how the prices of a typical "basket" of goods and services that city dwellers buy change over time. The data is collected every month and goes back more than a hundred years, but we are only interested in the years 2010 to 2026. The BLS gets about 94,000 prices every month from about 23,000 retail and service businesses in the US. One of the best things about this sample is that it has been professionally audited and is very large, making it a good macroeconomic benchmark. But its biggest problem is that it shows national averages, which can hide big price changes in certain areas (like NYC) or changes in the price of certain goods that affect pizza more than other foods.
+
+### Data-is-Plural (Aggregated Archives)
+
+-   **Source Link:** [Data-is-Plural Archive](https://www.data-is-plural.com/)
+
+-   **Creator:** Curated and maintained by **Jeremy Singer-Vine**.
+
+-   This resource is a collection of thousands of one-of-a-kind datasets, many of which are not well-known. They include government records and spreadsheets for niche hobbies. The data used for this analysis was collected from around the world between 2015 and 2024, and it was used to compare "weird" economic data. This is a meta-dataset, which means it is made up of other datasets. It has thousands of different measurements from many different fields. This sample is useful because it gives us counter-narratives and other economic indicators that standard government reports don't include. Its main problem is that there isn't enough consistency; each dataset in the archive uses a different method, so they need to be carefully cleaned and put in context before they can be compared to official stats.
+
+### \@NYCSlice Instagram Documentation
+
+-   **Source Link:** [NYC Slice Instagram](https://www.instagram.com/nycslice/)
+
+-   **Creator:** An independent project/account dedicated to documenting **New York City pizza culture**.
+
+    This data set contains both qualitative and quantitative "check-ins" at pizzerias, using photos to show the price and quality of a slice. There are hundreds of posts, each with a date, going back to 2013 and up to the present day. The data shows the price at the time of purchase, and it often includes captions that explain changes in the shop's menu or atmosphere. This sample lets us see how rising prices affect a community's emotions and culture in real time. The main problem is that it is unstructured data. Prices have to be manually pulled from captions or images, and it doesn't have the strict categories that a formal spreadsheet does. This makes it better for case studies than for broad statistical modeling.
+
+# Question 1
+
+How have pizza prices changed over time in comparison to inflation?
+
+```{r}
+#| title: "Part 1: Interactive Trend Analysis"
+# 1. Prepare and Aggregate the Data
+trend_data <- Total_df %>%
+  # Convert Jan:Dec to numeric (handles "Avail." etc)
+  mutate(across(Jan:Dec, as.numeric)) %>%
+  # Pivot to Long format
+  pivot_longer(
+    cols = Jan:Dec, 
+    names_to = "Month_Name", 
+    values_to = "Inflation_Rate"
+  ) %>%
+  # Create a proper Date object (e.g., "Jan 2024")
+  mutate(Date_Parsed = my(paste(Month_Name, Year))) %>%
+  # Filter out missing data
+  filter(!is.na(Inflation_Rate), !is.na(Price.as.number)) %>%
+  # 2. GROUP BY DATE to get a single average price per month
+  group_by(Date_Parsed) %>%
+  summarize(
+    Avg_Monthly_Price = mean(Price.as.number, na.rm = TRUE),
+    Avg_Monthly_Inflation = mean(Inflation_Rate, na.rm = TRUE)
+  ) %>%
+  arrange(Date_Parsed)
+
+# 3. Create the Line Graph
+p <- ggplot(trend_data, aes(x = Date_Parsed)) +
+  # Single line for Price
+  geom_line(aes(y = Avg_Monthly_Price, color = "Pizza Price"), linewidth = 1) +
+  # Single line for Inflation
+  geom_line(aes(y = Avg_Monthly_Inflation, color = "Inflation Rate"), linewidth = 1) +
+  labs(
+    title = "Monthly Average: Pizza Price vs. Inflation",
+    x = "Timeline",
+    y = "Value",
+    color = "Metric"
+  ) +
+  theme_minimal()
+
+# 4. Make it interactive
+ggplotly(p)
+```
+
+Is there any correlation to when inflation rises and pizza prices rise?
+
+```{r}
+#| title: "Part 2: Correlation"
+# 1. Clean and Reshape all years
+line_plot_data <- Total_df %>%
+  # Convert Jan:Dec columns to double (numeric)
+  # This turns "Avail." into NA
+  mutate(across(Jan:Dec, as.numeric)) %>%
+  # Pivot to Long format
+  pivot_longer(
+    cols = Jan:Dec, 
+    names_to = "Month_Name", 
+    values_to = "Inflation_Rate"
+  ) %>%
+  # Remove NAs so they don't break the math
+  filter(!is.na(Inflation_Rate)) %>%
+  # 2. Group by the Inflation Rate to find the average Price
+  group_by(Inflation_Rate) %>%
+  summarize(
+    Avg_Price = mean(Price.as.number, na.rm = TRUE)
+  ) %>%
+  # 3. Sort from lowest to highest inflation for the X-axis
+  arrange(Inflation_Rate)
+
+# 2. Create the Graph with Linear Regression
+allyearsplot <- ggplot(data = line_plot_data, aes(x = Inflation_Rate, y = Avg_Price)) +
+  geom_point(alpha = 0.5) +                    # Show the actual data points
+  geom_line(alpha = 0.3) +                     # Show the monthly connection
+  labs(
+    title = "Inflation Rate vs Average Price",
+    x = "Inflation Rate",
+    y = "Average Price"
+  )
+
+ggplotly(allyearsplot)
+
+```
+
+These graphs show that Pizza prices actually have little correlation with the inflation prices, pizza prices reamined fairly stable throughout the timeframe whereas inflation had some ups and downs, and had a spike at 2021, and pizza slightly rose but it was marginal and inflation maybe could have a slight reason but it is very minor correlation if it is.
+
+# Question 2
+
+```{r}
+#Creating a Dataframe of budget pizza
+budget_df <- Total_df |> filter(Price.as.number <= 1.50)
+#Creating dataframe of the average budget pizza prices by year
+budget <- budget_df |> group_by(Year) |>
+  summarize(avg_price = mean(Price.as.number, na.rm = TRUE))
+#Creating a Scatterplot of the Year vs average price of budget pizza
+ggplot(budget, aes(x = Year, y = avg_price)) +
+  geom_point() +
+    labs(title = "Year vs Avg price of budget pizza (slices under $1.50",
+       x = "Year",
+      y = "Avg Budget Pizza price")
+
+#Creating a scatterplot of Year vs the Avg inflation of that year
+ggplot(Total_df, aes(x = Year, y = Ave))+  
+  geom_point()+ 
+  labs(title = "Year vs Average Inflation per year",
+       x = "Year",
+       y = "Avg Inflation percentage")
+
+```
+
+Similarly to the first quesiton, the graphs here show the averages of budget pizza, there seem to be a few spikes in prices, however when comparing those spikes to the average inflation for that year, therr seems to be very little correlation once again, there may be a slight rise after a spike happens but it isn't definitive.
+
+# Question 3
+
+How have significant events, specifically COVID, impacted the relationship between pizza prices and inflation?
+
+For this we had to isolate all years before 2020 and find the correlation coefficient of both all years before 2020 and including all years to compare.
+
+```{r}
+regression_data <- Total_df %>%
+  # 1. Filter out years 2020 and past (keeping only years < 2020)
+  filter(Year > 2020) %>%
+  
+  # 2. Convert month columns to numeric (doubles)
+  mutate(across(Jan:Dec, as.numeric)) %>%
+  
+  # 3. Reshape the data
+  pivot_longer(
+    cols = Jan:Dec, 
+    names_to = "Month_Name", 
+    values_to = "Inflation_Rate"
+  ) %>%
+  
+  # 4. Clean up NAs from the pivot
+  filter(!is.na(Inflation_Rate)) %>%
+  
+  # 5. Group and Summarize
+  group_by(Inflation_Rate) %>%
+  summarize(
+    Avg_Price = mean(Price.as.number, na.rm = TRUE)
+  )
+
+# 2. Create the Graph with Linear Regression
+covidplot <- ggplot(data = regression_data, aes(x = Inflation_Rate, y = Avg_Price)) +
+  geom_point(alpha = 0.5) +                    # Show the actual data points
+  geom_line(alpha = 0.3) +                     # Show the monthly connection
+  geom_smooth(method = "lm", color = "red", se = TRUE) + # THE REGRESSION LINE
+  labs(
+    title = "Linear Regression: Price vs. Inflation Rate",
+    subtitle = "Red line represents the linear trend (Model: y ~ x)",
+    x = "Inflation Rate",
+    y = "Average Price"
+  ) +
+  theme_minimal()
+ggplotly(covidplot)
+# 1. Create the Linear Model (Price depends on Inflation)
+model <- lm(Avg_Price ~ Inflation_Rate, data = regression_data)
+
+# 2. View the full statistical report
+summary(model)
+
+
+
+```
+
+In this graph we created a linear regression graph with he Inflation rate and the Average price of pizzas, looking at the graph we can say there is a roughly moderate correlation between the 2. When we look at the data, we can see as the inflation rate increases, the average price slightly decreases according to the regression line. The slope of the regression coefficient is -0.094, meaning that for every 1-unit increase in inflation rate, the average price decreases by about 0.094 units on average. The statistical output also shows that this relationship is highly significant. The p-value for the inflation rate coefficient is 4.3 × 10-e7, which is far below typical significance thresholds (like 0.05). This suggests the negative relationship is unlikely to be due to random chance. This also means that when excluding all years post-covid, the data tell us that inflation can strangely be a strong negative indicator of pizza prices.
+
+# Conclusion
+
+Through our data analysis by the inflation rates we can see that by looking at Question 1's graphs, there seems to be a little correlation between the pizza prices and inflation, however this now begs the question if New York Pizza is a good representation of food prices in the United States. Because looking at the graph of budget pizza prices, it barely increases despite inflation fluctuating high, which could show it is a good food item for the citizens that are in need of cheap food, however because of this stability we may want to check other food items to see if inflation influences other food sources such as grocery items. It could also be due to how famous the \$1 pizza slice is, the cost can't fluctuate. Due to these things these conclusions of food prices in the US with inflation cannot be generized to all food items, only pizza prices in New York, so to fully engage this more broad question we may want to look at other food items and see if this trend continues.
+
+A few takeaways from our project is that 1. inflation does not strictly influence the prices of New York Pizza, 2. New York Pizza remains at a relatively stable price despite changing costs, which may not be the most representative food item throguhout the united states for food comparisons, and that 3. although inflation does not directly influence New York Pizza prices, in question 3, we found there is a moderate negative correlation, meaning that strangely inflation is a negative indicator of pizza prices. This could be due to bias and many other obscuring factors so in the future we would maybe like to look at more food sources and maybe even in different states to make a more generalized statement that can apply to more than just New York pizza, as this is all our dataset could represent.
+
+# 
